@@ -1,0 +1,2 @@
+﻿put file:///home/marehman/forstagedata/ordermaster.csv '@snowpipe_data_stage/de
+                                                         lta/' auto_compress=false;

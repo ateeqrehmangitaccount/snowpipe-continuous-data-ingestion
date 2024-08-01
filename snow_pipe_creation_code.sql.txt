@@ -1,0 +1,28 @@
+﻿#Create new SQL  worksheet.
+#Create snowflake database credentials.
+    • create database if not exists snowpipe_db;
+    • create role if not exists snowpipe_role;
+    • create warehouse if not exists snowpipe_wh with warehouse_size='x-small';
+    • grant all on database snowpipe_db to role snowpipe_role;
+    • grant usage on warehouse snowpipe_wh to role snowpipe_role;
+    • grant role snowpipe_role to user (user name);
+
+#Create internal stage in sowpipe_db
+    • use database snowpipe_db;
+    • use schema snowpipe_schema;
+    • use role snowpipe_role;
+    • use warehouse snowpipe_wh;
+    • create stage if not exists snowpipe_data_stage;
+#Create snowpipe
+    • use role accountadmin;
+    • create or replace pipe snowpipe_db.snowpipe_schema.snowpipe_pipe auto_ingest=false comment='snowpipe_comments' as copy into get_order_master from @data_stage/delta ON_ERROR=CONTINUE;
+   
+   #Check status of snowpipe
+   select system$pipe_status('snowpipe_pipe');   
+   
+   #pause snowpipe
+   alter pipe snowpipe_pipe SET PIPE_EXECUTION_PAUSED = true;
+   
+   #Refresh snowpipe 
+   ALTER PIPE snowpipe_pipe REFRESH;
+   
